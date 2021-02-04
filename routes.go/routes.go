@@ -1,6 +1,7 @@
 package routes
 
 import (
+	"ewarung-api-experiment/controllers"
 	"net/http"
 
 	"github.com/labstack/echo"
@@ -22,6 +23,20 @@ func Init() *echo.Echo {
 	e.GET("/", func(c echo.Context) error {
 		return c.JSON(http.StatusOK, "WHAT? HOW? WHY?")
 	})
+
+	// API ROUTE
+	api := e.Group("/api/v1")
+
+	// PROTECTED ROUTE
+	protected := api.Group("/protected")
+
+	// BASIC USER ROUTE
+	user := protected.Group("/user")
+	user.GET("", controllers.GetAllUser)
+	user.GET("/:id", controllers.GetUserById)
+	user.POST("", controllers.StoreUser)
+	user.PUT("/:id", controllers.UpdateUser)
+	user.DELETE("/:id", controllers.DeleteUser)
 
 	return e
 }

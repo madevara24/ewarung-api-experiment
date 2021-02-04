@@ -8,4 +8,6 @@ require (
 	github.com/labstack/gommon v0.3.0 // indirect
 	github.com/spf13/viper v1.7.1
 	github.com/valyala/fasttemplate v1.2.1 // indirect
+	golang.org/x/crypto v0.0.0-20190605123033-f99c8df09eb5
+	google.golang.org/protobuf v1.25.0
 )
