@@ -3,6 +3,7 @@ package db
 import (
 	"database/sql"
 	"ewarung-api-experiment/config"
+	"log"
 
 	_ "github.com/go-sql-driver/mysql"
 )
@@ -13,6 +14,7 @@ var err error
 func Init() {
 	conf, err := config.LoadConfig()
 	if err != nil {
+		log.Fatal("Error load config on db.go: ", err)
 		panic(err)
 	}
 

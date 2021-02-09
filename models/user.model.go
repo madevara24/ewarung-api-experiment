@@ -99,7 +99,7 @@ func StoreUser(username string, email string, rawPassword string, fullname strin
 
 	con := db.CreateCon()
 
-	password, err := bcrypt.GenerateFromPassword([]byte(rawPassword), 10)
+	password, err := bcrypt.GenerateFromPassword([]byte(rawPassword), bcrypt.DefaultCost)
 
 	sqlStatement := "INSERT INTO users (username, email, password, fullname, id_role) VALUES (?, ?, ?, ?, ?)"
 
@@ -132,7 +132,7 @@ func UpdateUser(id int, username string, email string, rawPassword string, fulln
 
 	con := db.CreateCon()
 
-	password, err := bcrypt.GenerateFromPassword([]byte(rawPassword), 10)
+	password, err := bcrypt.GenerateFromPassword([]byte(rawPassword), bcrypt.DefaultCost)
 
 	sqlStatement := "UPDATE users SET username = ?, email = ?, password = ?, fullname = ?, id_role = ? WHERE id = ?"
 

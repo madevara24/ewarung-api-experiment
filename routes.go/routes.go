@@ -1,7 +1,10 @@
 package routes
 
 import (
+	"ewarung-api-experiment/config"
 	"ewarung-api-experiment/controllers"
+	"ewarung-api-experiment/middlewares"
+	"log"
 	"net/http"
 
 	"github.com/labstack/echo"
@@ -9,11 +12,12 @@ import (
 )
 
 func Init() *echo.Echo {
-	// conf, err := config.LoadConfig()
-	// if err != nil {
-	// 	log.Fatal("Error load config on routes.go: ", err)
-	// }
-	// secret := conf.JWTSecret
+	conf, err := config.LoadConfig()
+	if err != nil {
+		log.Fatal("Error load config on routes.go: ", err)
+		panic(err)
+	}
+	secret := conf.JWTSecret
 	e := echo.New()
 	e.Use(middleware.LoggerWithConfig(middleware.LoggerConfig{
 		Format: "method=${method}, uri=${uri}, status=${status}\n",
@@ -24,13 +28,19 @@ func Init() *echo.Echo {
 		return c.JSON(http.StatusOK, "WHAT? HOW? WHY?")
 	})
 
-	// API ROUTE
+	// API ROUTES
 	api := e.Group("/api/v1")
 
-	// PROTECTED ROUTE
-	protected := api.Group("/protected")
+	// AUTH ROUTES
+	api.POST("/login", controllers.Login)
+	api.POST("/register", controllers.Register)
 
-	// BASIC USER ROUTE
+	// PROTECTED ROUTES
+	protected := api.Group("/protected")
+	protected.Use(middleware.JWT([]byte(secret)))
+	protected.Use(middlewares.CheckAdmin)
+
+	// BASIC USER ROUTES
 	user := protected.Group("/user")
 	user.GET("", controllers.GetAllUser)
 	user.GET("/:id", controllers.GetUserById)
