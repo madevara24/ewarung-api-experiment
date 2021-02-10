@@ -43,13 +43,20 @@ func Init() *echo.Echo {
 	adminRoutes := protected.Group("")
 	adminRoutes.Use(middlewares.CheckAdmin)
 
-	// BASIC USER ROUTES
+	// USER ROUTES FOR ADMIN
 	user := adminRoutes.Group("/user")
 	user.GET("", controllers.GetAllUser)
 	user.GET("/:id", controllers.GetUserById)
 	user.POST("", controllers.StoreUser)
 	user.PUT("/:id", controllers.UpdateUser)
 	user.DELETE("/:id", controllers.DeleteUser)
+
+	// ROLE ROUTES FOR ADMIN
+	role := adminRoutes.Group("/role")
+	role.GET("", controllers.GetAllRole)
+	role.POST("", controllers.StoreRole)
+	role.PUT("/:id", controllers.UpdateRole)
+	role.DELETE("/:id", controllers.DeleteRole)
 
 	return e
 }
