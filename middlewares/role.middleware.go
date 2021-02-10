@@ -19,8 +19,8 @@ func CheckAdmin(next echo.HandlerFunc) echo.HandlerFunc {
 
 		var res models.Response
 
-		res.Status = http.StatusUnauthorized
-		res.Message = "Not Admin"
+		res.Status = "Error"
+		res.Message = "Only admin can access this endpoint"
 		res.Data = nil
 
 		c.Error(c.JSON(http.StatusUnauthorized, res))

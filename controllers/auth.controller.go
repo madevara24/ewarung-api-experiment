@@ -28,7 +28,7 @@ func Login(c echo.Context) error {
 
 	if err != nil || !isPass {
 		fmt.Println(err)
-		res.Status = http.StatusBadRequest
+		res.Status = "Error"
 		res.Message = "Wrong password"
 		res.Data = nil
 		return c.JSON(http.StatusBadRequest, res)
@@ -41,8 +41,8 @@ func Login(c echo.Context) error {
 		return err
 	}
 
-	res.Status = http.StatusOK
-	res.Message = "Success"
+	res.Status = "Success"
+	res.Message = "Success login"
 	res.Data = token
 	return c.JSON(http.StatusOK, res)
 }

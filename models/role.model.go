@@ -3,7 +3,6 @@ package models
 import (
 	"ewarung-api-experiment/db"
 	"fmt"
-	"net/http"
 )
 
 type Role struct {
@@ -39,8 +38,8 @@ func GetAllRole() (Response, error) {
 		arrobj = append(arrobj, obj)
 	}
 
-	res.Status = http.StatusOK
-	res.Message = "Success"
+	res.Status = "Success"
+	res.Message = "Success get roles"
 	res.Data = arrobj
 
 	return res, nil
@@ -68,8 +67,8 @@ func StoreRole(name string) (Response, error) {
 		return res, err
 	}
 
-	res.Status = http.StatusOK
-	res.Message = "Success"
+	res.Status = "Success"
+	res.Message = "Success add role"
 	res.Data = map[string]int64{
 		"rows_affected": rowsAffected,
 	}
@@ -99,8 +98,8 @@ func UpdateRole(id int, name string) (Response, error) {
 		return res, err
 	}
 
-	res.Status = http.StatusOK
-	res.Message = "Success"
+	res.Status = "Success"
+	res.Message = "Success update role"
 	res.Data = map[string]int64{
 		"rows_affected": rowsAffected,
 	}
@@ -130,8 +129,8 @@ func DeleteRole(id int) (Response, error) {
 		return res, err
 	}
 
-	res.Status = http.StatusOK
-	res.Message = "Success"
+	res.Status = "Success"
+	res.Message = "Success delete role"
 	res.Data = map[string]int64{
 		"rows_affected": rowsAffected,
 	}

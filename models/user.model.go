@@ -3,7 +3,6 @@ package models
 import (
 	"ewarung-api-experiment/db"
 	"fmt"
-	"net/http"
 
 	"golang.org/x/crypto/bcrypt"
 )
@@ -49,8 +48,8 @@ func GetAllUser() (Response, error) {
 		arrobj = append(arrobj, obj)
 	}
 
-	res.Status = http.StatusOK
-	res.Message = "Success"
+	res.Status = "Success"
+	res.Message = "Success get all user"
 	res.Data = arrobj
 
 	return res, nil
@@ -86,8 +85,8 @@ func GetUserById(id int) (Response, error) {
 		}
 	}
 
-	res.Status = http.StatusOK
-	res.Message = "Success"
+	res.Status = "Success"
+	res.Message = "Success get user"
 	res.Data = obj
 
 	return res, nil
@@ -118,8 +117,8 @@ func StoreUser(username string, email string, rawPassword string, fullname strin
 		return res, err
 	}
 
-	res.Status = http.StatusOK
-	res.Message = "Success"
+	res.Status = "Success"
+	res.Message = "Success add user"
 	res.Data = map[string]int64{
 		"rows_affected": rowsAffected,
 	}
@@ -151,8 +150,8 @@ func UpdateUser(id int, username string, email string, rawPassword string, fulln
 		return res, err
 	}
 
-	res.Status = http.StatusOK
-	res.Message = "Success"
+	res.Status = "Success"
+	res.Message = "Success update user"
 	res.Data = map[string]int64{
 		"rows_affected": rowsAffected,
 	}
@@ -182,8 +181,8 @@ func DeleteUser(id int) (Response, error) {
 		return res, err
 	}
 
-	res.Status = http.StatusOK
-	res.Message = "Success"
+	res.Status = "Success"
+	res.Message = "Success delete user"
 	res.Data = map[string]int64{
 		"rows_affected": rowsAffected,
 	}
