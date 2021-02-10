@@ -58,5 +58,13 @@ func Init() *echo.Echo {
 	role.PUT("/:id", controllers.UpdateRole)
 	role.DELETE("/:id", controllers.DeleteRole)
 
+	// SHOP ROUTES FOR ADMIN
+	shop := adminRoutes.Group("/shop")
+	shop.GET("", controllers.GetAllShop)
+	shop.GET("/:id", controllers.GetAllShop)
+	shop.POST("", controllers.StoreShop)
+	shop.PUT("/:id", controllers.UpdateShop)
+	shop.DELETE("/:id", controllers.DeleteShop)
+
 	return e
 }
