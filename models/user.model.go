@@ -62,7 +62,7 @@ func GetUserById(id int) (Response, error) {
 
 	con := db.CreateCon()
 
-	sqlStatement := "SELECT * FROM users WHERE id = ?"
+	sqlStatement := "SELECT id, username, email, password, fullname, id_role FROM users WHERE id = ?"
 
 	stmt, err := con.Prepare(sqlStatement)
 	if err != nil {

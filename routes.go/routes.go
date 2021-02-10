@@ -35,13 +35,16 @@ func Init() *echo.Echo {
 	api.POST("/login", controllers.Login)
 	api.POST("/register", controllers.Register)
 
-	// PROTECTED ROUTES
+	// PROTECTED ROUTES (LOGGED IN USERS ONLY)
 	protected := api.Group("/protected")
 	protected.Use(middleware.JWT([]byte(secret)))
-	protected.Use(middlewares.CheckAdmin)
+
+	// ROUTES FOR ADMIN
+	adminRoutes := protected.Group("")
+	adminRoutes.Use(middlewares.CheckAdmin)
 
 	// BASIC USER ROUTES
-	user := protected.Group("/user")
+	user := adminRoutes.Group("/user")
 	user.GET("", controllers.GetAllUser)
 	user.GET("/:id", controllers.GetUserById)
 	user.POST("", controllers.StoreUser)
