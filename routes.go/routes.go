@@ -40,7 +40,7 @@ func Init() *echo.Echo {
 	protected.Use(middleware.JWT([]byte(secret)))
 
 	// ROUTES FOR ADMIN
-	adminRoutes := protected.Group("")
+	adminRoutes := protected.Group("/admin")
 	adminRoutes.Use(middlewares.CheckAdmin)
 
 	// USER ROUTES FOR ADMIN
@@ -65,6 +65,10 @@ func Init() *echo.Echo {
 	shop.POST("", controllers.StoreShop)
 	shop.PUT("/:id", controllers.UpdateShop)
 	shop.DELETE("/:id", controllers.DeleteShop)
+
+	// ROUTES FOR SHOP OWNERS
+	shopOwnerRoutes := protected.Group("/owner")
+	shopOwnerRoutes.Use(middlewares.CheckShopOwner)
 
 	return e
 }
