@@ -70,5 +70,9 @@ func Init() *echo.Echo {
 	shopOwnerRoutes := protected.Group("/owner")
 	shopOwnerRoutes.Use(middlewares.CheckShopOwner)
 
+	// PROFILE ROUTES FOR SHOP OWNERS
+	ownerProfile := shopOwnerRoutes.Group("/profile")
+	ownerProfile.GET("", controllers.GetLogedInUserWithRole)
+
 	return e
 }

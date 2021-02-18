@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"ewarung-api-experiment/jwt"
 	"ewarung-api-experiment/models"
 	"net/http"
 	"strconv"
@@ -70,6 +71,19 @@ func DeleteUser(c echo.Context) (err error) {
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, err.Error())
 	}
+
+	return c.JSON(http.StatusOK, result)
+}
+
+func GetLogedInUserWithRole(c echo.Context) (err error) {
+	claims, verified := jwt.ExtractClaims(c.Request().Header.Get("Authorization"))
+	if !verified {
+		return c.JSON(http.StatusInternalServerError, err.Error())
+	}
+
+	conv_id := int(claims["id"].(float64))
+
+	result, err := models.GetUserWithRoleById(conv_id)
 
 	return c.JSON(http.StatusOK, result)
 }

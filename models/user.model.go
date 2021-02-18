@@ -16,6 +16,15 @@ type User struct {
 	IDRole   int    `json:"id_role"`
 }
 
+type UserRole struct {
+	ID       int    `json:"id"`
+	Username string `json:"username"`
+	Email    string `json:"email"`
+	Password string `json:"password"`
+	FullName string `json:"fullname"`
+	Role     Role   `json:"role"`
+}
+
 func GetAllUser() (Response, error) {
 	var obj User
 	var arrobj []User
@@ -48,7 +57,6 @@ func GetAllUser() (Response, error) {
 		arrobj = append(arrobj, obj)
 	}
 
-	res.Status = "Success"
 	res.Message = "Success get all user"
 	res.Data = arrobj
 
@@ -85,7 +93,6 @@ func GetUserById(id int) (Response, error) {
 		}
 	}
 
-	res.Status = "Success"
 	res.Message = "Success get user"
 	res.Data = obj
 
@@ -117,7 +124,6 @@ func StoreUser(username string, email string, rawPassword string, fullname strin
 		return res, err
 	}
 
-	res.Status = "Success"
 	res.Message = "Success add user"
 	res.Data = map[string]int64{
 		"rows_affected": rowsAffected,
@@ -150,7 +156,6 @@ func UpdateUser(id int, username string, email string, rawPassword string, fulln
 		return res, err
 	}
 
-	res.Status = "Success"
 	res.Message = "Success update user"
 	res.Data = map[string]int64{
 		"rows_affected": rowsAffected,
@@ -181,11 +186,87 @@ func DeleteUser(id int) (Response, error) {
 		return res, err
 	}
 
-	res.Status = "Success"
 	res.Message = "Success delete user"
 	res.Data = map[string]int64{
 		"rows_affected": rowsAffected,
 	}
 
 	return res, nil
+}
+
+func GetAllUserWithRole() (Response, error) {
+	var obj UserRole
+	var arrobj []UserRole
+	var res Response
+
+	con := db.CreateCon()
+
+	sqlStatement := "SELECT u.id, u.username, u.email, u.password, u.fullname, u.id_role, r.name FROM users u JOIN roles r on u.id_role = r.id"
+
+	rows, err := con.Query(sqlStatement)
+	defer rows.Close()
+
+	if err != nil {
+		fmt.Println(err)
+		return res, err
+	}
+
+	for rows.Next() {
+		err = rows.Scan(
+			&obj.ID,
+			&obj.Username,
+			&obj.Email,
+			&obj.Password,
+			&obj.FullName,
+			&obj.Role.ID,
+			&obj.Role.Name)
+		if err != nil {
+			return res, err
+		}
+
+		arrobj = append(arrobj, obj)
+	}
+
+	res.Message = "Success get all user with roles"
+	res.Data = arrobj
+
+	return res, nil
+}
+
+func GetUserWithRoleById(id int) (Response, error) {
+	var obj UserRole
+	var res Response
+
+	con := db.CreateCon()
+
+	sqlStatement := "SELECT u.id, u.username, u.email, u.password, u.fullname, u.id_role, r.name FROM users u JOIN roles r on u.id_role = r.id WHERE u.id = ?"
+
+	stmt, err := con.Prepare(sqlStatement)
+	if err != nil {
+		return res, err
+	}
+
+	rows, err := stmt.Query(id)
+	if err != nil {
+		return res, err
+	}
+
+	for rows.Next() {
+		err = rows.Scan(&obj.ID,
+			&obj.Username,
+			&obj.Email,
+			&obj.Password,
+			&obj.FullName,
+			&obj.Role.ID,
+			&obj.Role.Name)
+		if err != nil {
+			return res, err
+		}
+	}
+
+	res.Message = "Success get user with role"
+	res.Data = obj
+
+	return res, nil
+
 }
