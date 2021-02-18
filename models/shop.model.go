@@ -40,7 +40,6 @@ func GetAllShop() (Response, error) {
 		arrobj = append(arrobj, obj)
 	}
 
-	res.Status = "Success"
 	res.Message = "Success get all shop"
 	res.Data = arrobj
 
@@ -74,7 +73,6 @@ func GetShopById(id int) (Response, error) {
 		}
 	}
 
-	res.Status = "Success"
 	res.Message = "Success get shop"
 	res.Data = obj
 
@@ -104,7 +102,6 @@ func StoreShop(name string, description string) (Response, error) {
 		return res, err
 	}
 
-	res.Status = "Success"
 	res.Message = "Success add shop"
 	res.Data = map[string]int64{
 		"rows_affected": rowsAffected,
@@ -135,7 +132,6 @@ func UpdateShop(id int, name string, description string) (Response, error) {
 		return res, err
 	}
 
-	res.Status = "Success"
 	res.Message = "Success update shop"
 	res.Data = map[string]int64{
 		"rows_affected": rowsAffected,
@@ -166,7 +162,6 @@ func DeleteShop(id int) (Response, error) {
 		return res, err
 	}
 
-	res.Status = "Success"
 	res.Message = "Success delete shop"
 	res.Data = map[string]int64{
 		"rows_affected": rowsAffected,

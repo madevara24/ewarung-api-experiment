@@ -11,7 +11,7 @@ import (
 )
 
 func Login(c echo.Context) error {
-	res := new(models.Response)
+	var res models.Response
 	cred := new(models.Credentials)
 	if err := c.Bind(cred); err != nil {
 		return err
@@ -28,7 +28,6 @@ func Login(c echo.Context) error {
 
 	if err != nil || !isPass {
 		fmt.Println(err)
-		res.Status = "Error"
 		res.Message = "Wrong password"
 		res.Data = nil
 		return c.JSON(http.StatusBadRequest, res)
@@ -41,7 +40,6 @@ func Login(c echo.Context) error {
 		return err
 	}
 
-	res.Status = "Success"
 	res.Message = "Success login"
 	res.Data = token
 	return c.JSON(http.StatusOK, res)

@@ -16,6 +16,7 @@ func GetAllShop(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, result)
 }
+
 func GetShopById(c echo.Context) error {
 	id := c.Param("id")
 	conv_id, err := strconv.Atoi(id)
