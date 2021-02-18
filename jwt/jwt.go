@@ -2,12 +2,14 @@ package jwt
 
 import (
 	"ewarung-api-experiment/config"
+	"strings"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
 )
 
 type UserClaims struct {
+	ID       int    `json:"id"`
 	Username string `json:"username"`
 	Role     string `json:"role"`
 	jwt.StandardClaims
@@ -16,6 +18,7 @@ type UserClaims struct {
 func CreateToken(userId int, username string, role string) (string, error) {
 	conf, err := config.LoadConfig()
 	claims := &UserClaims{
+		userId,
 		username,
 		role,
 		jwt.StandardClaims{
@@ -31,11 +34,12 @@ func CreateToken(userId int, username string, role string) (string, error) {
 	return token, nil
 }
 
-func ExtractClaims(tokenString string) (jwt.MapClaims, bool) {
+func ExtractClaims(rawToken string) (jwt.MapClaims, bool) {
+	token := formatBearerToke(rawToken)
 	conf, err := config.LoadConfig()
 	secret := conf.JWTSecret
 	claims := jwt.MapClaims{}
-	_, err = jwt.ParseWithClaims(tokenString, claims, func(token *jwt.Token) (interface{}, error) {
+	_, err = jwt.ParseWithClaims(token, claims, func(token *jwt.Token) (interface{}, error) {
 		return []byte(secret), nil
 	})
 
@@ -44,4 +48,8 @@ func ExtractClaims(tokenString string) (jwt.MapClaims, bool) {
 	}
 
 	return claims, true
+}
+
+func formatBearerToke(rawToken string) string {
+	return strings.Replace(rawToken, "Bearer ", "", -1)
 }
