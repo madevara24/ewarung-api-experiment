@@ -80,8 +80,8 @@ func Init() *echo.Echo {
 
 	// // SHOP ROUTES FOR SHOP OWNERS
 	ownerShop := shopOwnerRoutes.Group("/shop")
-	// ownerShop.GET("", controllers.GetAllShop)
-	// ownerShop.GET("/:id", controllers.GetAllShop)
+	ownerShop.GET("", controllers.GetAllOwnerShop)
+	ownerShop.GET("/:id", controllers.GetAllShop)
 	ownerShop.POST("", controllers.OwnerRegisterShop)
 	// ownerShop.PUT("/:id", controllers.UpdateShop)
 	// ownerShop.DELETE("/:id", controllers.DeleteShop)

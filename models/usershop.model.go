@@ -48,7 +48,7 @@ func GetAllUserShop() (Response, error) {
 		arrobj = append(arrobj, obj)
 	}
 
-	res.Message = "Success get all shop"
+	res.Message = "Success get all shop with user"
 	res.Data = arrobj
 
 	return res, nil
@@ -83,6 +83,52 @@ func GetUserShopById(id int) (Response, error) {
 
 	res.Message = "Success get shop"
 	res.Data = obj
+
+	return res, nil
+
+}
+
+func GetUserShopByUserId(id int) (Response, error) {
+	var obj UserShop
+	var arrobj []UserShop
+	var res Response
+
+	con := db.CreateCon()
+
+	sqlStatement := "SELECT us.id, u.id, u.username, u.email, u.password, u.fullname, u.id_role, r.name, s.id, s.name, s.description FROM users_shops us JOIN users u on us.id_user = u.id JOIN roles r on r.id = u.id_role JOIN shops s on s.id = us.id_shop WHERE us.id_user = ?"
+
+	stmt, err := con.Prepare(sqlStatement)
+	if err != nil {
+		return res, err
+	}
+
+	rows, err := stmt.Query(id)
+	if err != nil {
+		return res, err
+	}
+
+	for rows.Next() {
+		err = rows.Scan(
+			&obj.ID,
+			&obj.User.ID,
+			&obj.User.Username,
+			&obj.User.Email,
+			&obj.User.Password,
+			&obj.User.FullName,
+			&obj.User.Role.ID,
+			&obj.User.Role.Name,
+			&obj.Shop.ID,
+			&obj.Shop.Name,
+			&obj.Shop.Description)
+		if err != nil {
+			return res, err
+		}
+
+		arrobj = append(arrobj, obj)
+	}
+
+	res.Message = "Success get all shop with user"
+	res.Data = arrobj
 
 	return res, nil
 

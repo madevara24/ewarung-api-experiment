@@ -103,3 +103,19 @@ func OwnerRegisterShop(c echo.Context) (err error) {
 
 	return c.JSON(http.StatusOK, result)
 }
+
+func GetAllOwnerShop(c echo.Context) (err error) {
+	claims, verified := jwt.ExtractClaims(c.Request().Header.Get("Authorization"))
+	if !verified {
+		return c.JSON(http.StatusInternalServerError, err.Error())
+	}
+
+	conv_id := int(claims["id"].(float64))
+
+	result, err := models.GetUserShopByUserId(conv_id)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]string{"message": err.Error()})
+	}
+
+	return c.JSON(http.StatusOK, result)
+}
