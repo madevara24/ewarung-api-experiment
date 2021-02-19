@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"ewarung-api-experiment/jwt"
 	"ewarung-api-experiment/models"
 	"net/http"
 	"strconv"
@@ -8,6 +9,7 @@ import (
 	"github.com/labstack/echo"
 )
 
+// ADMIN SECTION
 func GetAllShop(c echo.Context) error {
 	result, err := models.GetAllShop()
 	if err != nil {
@@ -67,6 +69,34 @@ func DeleteShop(c echo.Context) (err error) {
 	conv_id, err := strconv.Atoi(id)
 
 	result, err := models.DeleteShop(conv_id)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, err.Error())
+	}
+
+	return c.JSON(http.StatusOK, result)
+}
+
+// OWNER SECTION
+func OwnerRegisterShop(c echo.Context) (err error) {
+	s := new(models.Shop)
+	var shop models.Shop
+	if err = c.Bind(s); err != nil {
+		return c.JSON(http.StatusInternalServerError, err.Error())
+	}
+
+	shop, err = models.StoreShopReturnId(s.Name, s.Description)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, err.Error())
+	}
+
+	claims, verified := jwt.ExtractClaims(c.Request().Header.Get("Authorization"))
+	if !verified {
+		return c.JSON(http.StatusInternalServerError, err.Error())
+	}
+
+	conv_id := int(claims["id"].(float64))
+
+	result, err := models.StoreUserShop(conv_id, shop.ID)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, err.Error())
 	}

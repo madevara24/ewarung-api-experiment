@@ -66,6 +66,10 @@ func Init() *echo.Echo {
 	shop.PUT("/:id", controllers.UpdateShop)
 	shop.DELETE("/:id", controllers.DeleteShop)
 
+	// USER SHOP ROUTES FOR ADMIN
+	userShop := adminRoutes.Group("/user-shop")
+	userShop.GET("", controllers.GetAllUserShop)
+
 	// ROUTES FOR SHOP OWNERS
 	shopOwnerRoutes := protected.Group("/owner")
 	shopOwnerRoutes.Use(middlewares.CheckShopOwner)
@@ -73,6 +77,14 @@ func Init() *echo.Echo {
 	// PROFILE ROUTES FOR SHOP OWNERS
 	ownerProfile := shopOwnerRoutes.Group("/profile")
 	ownerProfile.GET("", controllers.GetLogedInUserWithRole)
+
+	// // SHOP ROUTES FOR SHOP OWNERS
+	ownerShop := shopOwnerRoutes.Group("/shop")
+	// ownerShop.GET("", controllers.GetAllShop)
+	// ownerShop.GET("/:id", controllers.GetAllShop)
+	ownerShop.POST("", controllers.OwnerRegisterShop)
+	// ownerShop.PUT("/:id", controllers.UpdateShop)
+	// ownerShop.DELETE("/:id", controllers.DeleteShop)
 
 	return e
 }

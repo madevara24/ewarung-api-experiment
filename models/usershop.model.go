@@ -5,20 +5,20 @@ import (
 	"fmt"
 )
 
-type Shop struct {
-	ID          int    `json:"id"`
-	Name        string `json:"name"`
-	Description string `json:"description"`
+type UserShop struct {
+	ID   int      `json:"id"`
+	User UserRole `json:"user"`
+	Shop Shop     `json:"shop"`
 }
 
-func GetAllShop() (Response, error) {
-	var obj Shop
-	var arrobj []Shop
+func GetAllUserShop() (Response, error) {
+	var obj UserShop
+	var arrobj []UserShop
 	var res Response
 
 	con := db.CreateCon()
 
-	sqlStatement := "SELECT id, name, description FROM shops"
+	sqlStatement := "SELECT us.id, u.id, u.username, u.email, u.password, u.fullname, u.id_role, r.name, s.id, s.name, s.description FROM users_shops us JOIN users u on us.id_user = u.id JOIN roles r on r.id = u.id_role JOIN shops s on s.id = us.id_shop"
 
 	rows, err := con.Query(sqlStatement)
 	defer rows.Close()
@@ -31,8 +31,16 @@ func GetAllShop() (Response, error) {
 	for rows.Next() {
 		err = rows.Scan(
 			&obj.ID,
-			&obj.Name,
-			&obj.Description)
+			&obj.User.ID,
+			&obj.User.Username,
+			&obj.User.Email,
+			&obj.User.Password,
+			&obj.User.FullName,
+			&obj.User.Role.ID,
+			&obj.User.Role.Name,
+			&obj.Shop.ID,
+			&obj.Shop.Name,
+			&obj.Shop.Description)
 		if err != nil {
 			return res, err
 		}
@@ -46,7 +54,7 @@ func GetAllShop() (Response, error) {
 	return res, nil
 }
 
-func GetShopById(id int) (Response, error) {
+func GetUserShopById(id int) (Response, error) {
 	var obj Shop
 	var res Response
 
@@ -80,19 +88,19 @@ func GetShopById(id int) (Response, error) {
 
 }
 
-func StoreShop(name string, description string) (Response, error) {
+func StoreUserShop(id_user int, id_shop int) (Response, error) {
 	var res Response
 
 	con := db.CreateCon()
 
-	sqlStatement := "INSERT INTO shops (name, description) VALUES (?, ?)"
+	sqlStatement := "INSERT INTO users_shops (id_user, id_shop) VALUES (?, ?)"
 
 	stmt, err := con.Prepare(sqlStatement)
 	if err != nil {
 		return res, err
 	}
 
-	result, err := stmt.Exec(name, description)
+	result, err := stmt.Exec(id_user, id_shop)
 	if err != nil {
 		return res, err
 	}
@@ -110,48 +118,7 @@ func StoreShop(name string, description string) (Response, error) {
 	return res, nil
 }
 
-func StoreShopReturnId(name string, description string) (Shop, error) {
-	var obj Shop
-
-	con := db.CreateCon()
-
-	sqlStatement := "INSERT INTO `shops`(`name`, `description`) VALUES (?, ?) ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id)"
-
-	stmt, err := con.Prepare(sqlStatement)
-	if err != nil {
-		return obj, err
-	}
-
-	result, err := stmt.Exec(name, description)
-	if err != nil {
-		return obj, err
-	}
-
-	_, err = result.RowsAffected()
-	if err != nil {
-		return obj, err
-	}
-
-	sqlStatement = "SELECT LAST_INSERT_ID()"
-	rows, err := con.Query(sqlStatement)
-	defer rows.Close()
-
-	if err != nil {
-		fmt.Println(err)
-		return obj, err
-	}
-
-	for rows.Next() {
-		err = rows.Scan(&obj.ID)
-		if err != nil {
-			return obj, err
-		}
-	}
-
-	return obj, nil
-}
-
-func UpdateShop(id int, name string, description string) (Response, error) {
+func UpdateUserShop(id int, name string, description string) (Response, error) {
 	var res Response
 
 	con := db.CreateCon()
@@ -181,7 +148,7 @@ func UpdateShop(id int, name string, description string) (Response, error) {
 	return res, nil
 }
 
-func DeleteShop(id int) (Response, error) {
+func DeleteUserShop(id int) (Response, error) {
 	var res Response
 
 	con := db.CreateCon()
